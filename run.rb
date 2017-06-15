@@ -7,6 +7,22 @@ require_relative 'lib/rubyserial_extensions/serial/get_all'
 Serial.include RubyserialExtensions::Serial::GetAll
 # End Monkeypatch Serial
 
+interrupted = false
+def shut_down
+  puts 'Shutting down...'
+  interrupted = true
+end
+
+# Trap ^C
+Signal.trap('INT') do
+  shut_down
+end
+
+# Trap `Kill `
+Signal.trap('TERM') do
+  shut_down
+end
+
 # Setup LEDs
 led1 = PiPiper::Pin.new(pin: 16, direction: :out)
 led2 = PiPiper::Pin.new(pin: 18, direction: :out)
@@ -33,6 +49,9 @@ puts 'All sms deleted...'
 reply = serialport.get_all # Clean buf
 puts 'Listening for incoming SMS...'
 loop do
+  # Exit if interrupted
+  exit if interrupted
+
   reply = serialport.get_all
   next unless reply != ''
 
