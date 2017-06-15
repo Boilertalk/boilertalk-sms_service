@@ -8,19 +8,19 @@ Serial.include RubyserialExtensions::Serial::GetAll
 # End Monkeypatch Serial
 
 interrupted = false
-def shut_down
+
+# Trap ^C
+Signal.trap('INT') do
+  puts "\n"
   puts 'Shutting down...'
   interrupted = true
 end
 
-# Trap ^C
-Signal.trap('INT') do
-  shut_down
-end
-
 # Trap `Kill `
 Signal.trap('TERM') do
-  shut_down
+  puts "\n"
+  puts 'Shutting down...'
+  interrupted = true
 end
 
 # Setup LEDs
