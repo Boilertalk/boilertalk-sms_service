@@ -2,6 +2,11 @@ require 'rubygems'
 require 'bundler'
 Bundler.require(:default)
 
+# Monkeypatch Serial
+require_relative 'lib/rubyserial_extensions/serial/get_all'
+Serial.include RubyserialExtensions::Serial::GetAll
+# End Monkeypatch Serial
+
 # Setup LEDs
 led1 = PiPiper::Pin.new(pin: 16, direction: :out)
 led2 = PiPiper::Pin.new(pin: 18, direction: :out)
@@ -25,15 +30,15 @@ sleep 1
 puts 'All sms deleted...'
 # End Delete all sms
 
-reply = serialport.gets # Clean buf
+reply = serialport.get_all # Clean buf
 puts 'Listening for incoming SMS...'
 loop do
-  reply = serialport.gets
+  reply = serialport.get_all
   next unless reply != ''
 
   serialport.write "AT+CMGR=1\r"
   sleep 1
-  reply = serialport.gets
+  reply = serialport.get_all
   puts 'SMS received. Content:'
   puts reply
 
@@ -74,6 +79,6 @@ loop do
   sleep 0.500
   serialport.write "AT+CMGDA=\"DEL ALL\"\r" # delete all
   sleep 0.500
-  serialport.gets # Clear buffer
+  serialport.get_all # Clear buffer
   sleep 0.500
 end
