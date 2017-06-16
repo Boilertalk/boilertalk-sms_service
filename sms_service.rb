@@ -52,9 +52,6 @@ puts 'Setup complete...'
 host = ENV['REDIS_HOST']
 port = ENV['REDIS_PORT']
 password = ENV['REDIS_PASSWORD']
-puts "HOST: #{host}"
-puts "PORT: #{port}"
-puts "PASSWORD: #{password}"
 redis = SMSService::RedisHandler.new(Redis.new(host: host, port: port,
                                                password: password),
                                      REDIS_JOB_KEY)

@@ -2,6 +2,9 @@ require 'rubygems'
 require 'bundler'
 Bundler.require(:default)
 
+# Load dotenv variables
+Dotenv.load
+
 # Monkeypatch Serial
 require_relative 'rubyserial_extensions/serial/get_all'
 Serial.include RubyserialExtensions::Serial::GetAll
