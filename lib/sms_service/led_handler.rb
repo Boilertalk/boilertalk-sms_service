@@ -19,7 +19,7 @@ module SMSService
       @pins[p]
     end
 
-    def lightshow
+    def lightshow(time = 0.500)
       @lightshow = Thread.new do
         @pins.each do |_i, p|
           p.off
@@ -27,7 +27,7 @@ module SMSService
         loop do
           @pins.each do |_i, p|
             p.on
-            sleep 0.500
+            sleep time
             p.off
           end
         end
