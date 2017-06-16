@@ -52,8 +52,9 @@ puts 'Setup complete...'
 host = ENV['REDIS_HOST']
 port = ENV['REDIS_PORT']
 password = ENV['REDIS_PASSWORD']
-redis = SMSService::RedisHandler(Redis.new(host: host, port: port,
-                                           password: password), REDIS_JOB_KEY)
+redis = SMSService::RedisHandler.new(Redis.new(host: host, port: port,
+                                               password: password),
+                                     REDIS_JOB_KEY)
 
 # Actual worker
 loop do
