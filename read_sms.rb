@@ -1,11 +1,4 @@
-require 'rubygems'
-require 'bundler'
-Bundler.require(:default)
-
-# Monkeypatch Serial
-require_relative 'lib/rubyserial_extensions/serial/get_all'
-Serial.include RubyserialExtensions::Serial::GetAll
-# End Monkeypatch Serial
+require_relative 'lib/sms_service'
 
 interrupted = false
 
@@ -16,7 +9,7 @@ Signal.trap('INT') do
   interrupted = true
 end
 
-# Trap `Kill `
+# Trap `Kill`
 Signal.trap('TERM') do
   puts "\n"
   puts 'Shutting down...'

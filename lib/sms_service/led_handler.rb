@@ -19,7 +19,32 @@ module SMSService
       @pins[p]
     end
 
+    # rubocop:disable Metrics/MethodLength
+    def flash(time = 0.500)
+      stop_flash unless @flash.nil?
+      @flash = Thread.new do
+        loop do
+          @pins.each do |_i, p|
+            p.on
+          end
+          sleep time
+          @pins.each do |_i, p|
+            p.off
+          end
+        end
+      end
+    end
+
+    def stop_flash
+      return if @flash.nil?
+      @flash.exit
+      @pins.each do |_i, p|
+        p.off
+      end
+    end
+
     def lightshow(time = 0.500)
+      stop_lightshow unless @lightshow.nil?
       @lightshow = Thread.new do
         @pins.each do |_i, p|
           p.off

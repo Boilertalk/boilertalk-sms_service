@@ -1,13 +1,13 @@
-require 'rubygems'
-require 'bundler'
-Bundler.require(:default)
-# Load environment variables
-Dotenv.load
+require_relative 'lib/sms_service'
 
-# Monkeypatch Serial
-require_relative 'lib/rubyserial_extensions/serial/get_all'
-Serial.include RubyserialExtensions::Serial::GetAll
-# End Monkeypatch Serial
+# ******* Constants *******
+LED1 = 23
+LED2 = 24
+LED3 = 25
+
+SERIAL_PORT = '/dev/ttyAMA0'.freeze
+SERIAL_BAUD_RATE = 115_200
+# ******* End Constants *******
 
 interrupted = false
 
@@ -18,7 +18,7 @@ Signal.trap('INT') do
   interrupted = true
 end
 
-# Trap `Kill `
+# Trap `Kill`
 Signal.trap('TERM') do
   puts "\n"
   puts 'Shutting down...'
@@ -26,26 +26,30 @@ Signal.trap('TERM') do
 end
 
 # Setup LEDs
-led1 = PiPiper::Pin.new(pin: 16, direction: :out)
-led2 = PiPiper::Pin.new(pin: 18, direction: :out)
-led3 = PiPiper::Pin.new(pin: 22, direction: :out)
+pins = SMSService::LEDHandler.new([LED1, LED2, LED3])
 # End Setup LEDs
 
-SERIAL_PORT = '/dev/ttyAMA0'.freeze
+# Start setup: Flash indicator
+pins.flash
 
-serialport = Serial.new SERIAL_PORT, 115_200
-puts 'Setup complete...'
+# Setup serialport
+sim = SMSService::SIMHandler.new(Serial.new(SERIAL_PORT, SERIAL_BAUD_RATE))
+# End Setup serialport
 
 # Set to text mode
-serialport.write "AT+CMGF=1\r"
-sleep 1
+raise 'SIM: Text mode could not be activated' unless sim.set_text_mode
 puts 'Text mode activated...'
 # End Set to text mode
+
+# Setup complete: Stop flash indicator
+pins.stop_flash
+puts 'Setup complete...'
 
 # Setup Redis
 host = ENV['REDIS_HOST']
 port = ENV['REDIS_PORT']
 password = ENV['REDIS_PASSWORD']
-redis = Redis.new(host: host, port: port, password: password)
+redis = SMSService::RedisHandler(Redis.new(host: host, port: port,
+                                           password: password))
 
 redis.set('mykey', 'hello world')
