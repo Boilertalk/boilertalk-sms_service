@@ -18,11 +18,11 @@ module SMSService
 
     def send_sms(number, text)
       @serialport.write "AT+CMGS=\"#{number}\"\r"
-      sleep 0.5
+      sleep 0.25
       @serialport.write text
-      sleep 0.5
+      sleep 0.25
       @serialport.write "\x1A"
-      sleep 3
+      sleep 5
       reply = @serialport.get_all
 
       # Return true if reply contains OK
