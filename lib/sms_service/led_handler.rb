@@ -27,7 +27,7 @@ module SMSService
         loop do
           @pins.each do |_i, p|
             p.on
-            sleep 100
+            sleep 0.100
             p.off
           end
         end
