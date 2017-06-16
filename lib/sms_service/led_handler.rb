@@ -18,5 +18,24 @@ module SMSService
     def pin(p)
       @pins[p]
     end
+
+    def lightshow
+      @lightshow = Thread.new do
+        @pins.each(&:off)
+        loop do
+          @pins.each do |p|
+            p.on
+            sleep 100
+            p.off
+          end
+        end
+      end
+    end
+
+    def stop_lightshow
+      return if @lightshow.nil?
+      @lightshow.exit
+      @pins.each(&:off)
+    end
   end
 end
