@@ -18,7 +18,9 @@ module SMSService
 
     def send_sms(number, text)
       @serialport.write "AT+CMGS=\"#{number}\"\r"
+      sleep 1
       @serialport.write text
+      sleep 1
       @serialport.write "\x1A"
       sleep 1
       reply = @serialport.get_all
