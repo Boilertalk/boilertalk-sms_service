@@ -1,0 +1,26 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    dotenv (2.2.1)
+    eventmachine (1.0.9)
+    ffi (1.9.18)
+    json (2.0.2)
+    pi_piper (2.0.0)
+      eventmachine (= 1.0.9)
+      ffi
+    redis (3.3.3)
+    rubyserial (0.4.0)
+      ffi (~> 1.9, >= 1.9.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  dotenv
+  json
+  pi_piper
+  redis (~> 3.2)
+  rubyserial
+
+BUNDLED WITH
+   1.14.6

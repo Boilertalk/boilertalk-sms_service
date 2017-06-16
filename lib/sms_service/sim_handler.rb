@@ -15,5 +15,16 @@ module SMSService
       # Return true if reply contains OK
       reply.upcase.include? 'OK'
     end
+
+    def send_sms(number, text)
+      @serialport.write "AT+CMGS=\"#{number}\"\r"
+      @serialport.write text
+      @serialport.write "\x1A"
+      sleep 1
+      reply = @serialport.get_all
+
+      # Return true if reply contains OK
+      reply.upcase.include? 'OK'
+    end
   end
 end

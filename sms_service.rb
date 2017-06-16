@@ -7,6 +7,9 @@ LED3 = 25
 
 SERIAL_PORT = '/dev/ttyAMA0'.freeze
 SERIAL_BAUD_RATE = 115_200
+
+REDIS_JOB_KEY = 'queue:sms'.freeze
+REDIS_POLLING_FREQUENCY = 5
 # ******* End Constants *******
 
 interrupted = false
@@ -50,6 +53,21 @@ host = ENV['REDIS_HOST']
 port = ENV['REDIS_PORT']
 password = ENV['REDIS_PASSWORD']
 redis = SMSService::RedisHandler(Redis.new(host: host, port: port,
-                                           password: password))
+                                           password: password), REDIS_JOB_KEY)
 
-redis.set('mykey', 'hello world')
+# Actual worker
+loop do
+  exit if interrupted
+
+  j = redis.dequeue
+  if !j.nil?
+    puts 'Sending message...'
+    if sim.send_sms(j['number'], j['text'])
+      puts 'Message sent...'
+    else
+      puts 'Something went wrong sending the message...'
+    end
+  else
+    sleep REDIS_POLLING_FREQUENCY
+  end
+end
