@@ -22,10 +22,8 @@ module SMSService
       @serialport.write text
       sleep 0.5
       @serialport.write "\x1A"
-      sleep 2
+      sleep 3
       reply = @serialport.get_all
-
-      puts reply
 
       # Return true if reply contains OK
       reply.upcase.include? 'OK'
