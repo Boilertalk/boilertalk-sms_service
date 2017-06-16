@@ -3,7 +3,7 @@ require 'bundler'
 Bundler.require(:default)
 
 # Monkeypatch Serial
-require_relative 'lib/rubyserial_extensions/serial/get_all'
+require_relative 'rubyserial_extensions/serial/get_all'
 Serial.include RubyserialExtensions::Serial::GetAll
 # End Monkeypatch Serial
 
