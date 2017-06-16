@@ -21,9 +21,11 @@ module SMSService
 
     def lightshow
       @lightshow = Thread.new do
-        @pins.each(&:off)
+        @pins.each do |_i, p|
+          p.off
+        end
         loop do
-          @pins.each do |p|
+          @pins.each do |_i, p|
             p.on
             sleep 100
             p.off
@@ -35,7 +37,9 @@ module SMSService
     def stop_lightshow
       return if @lightshow.nil?
       @lightshow.exit
-      @pins.each(&:off)
+      @pins.each do |_i, p|
+        p.off
+      end
     end
   end
 end
