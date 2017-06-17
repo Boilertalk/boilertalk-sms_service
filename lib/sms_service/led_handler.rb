@@ -51,7 +51,7 @@ module SMSService
             p.on
             sleep time
           end
-          @pins.reverse_each do |_i, p|
+          @pins.each do |_i, p|
             p.off
             sleep time
           end
