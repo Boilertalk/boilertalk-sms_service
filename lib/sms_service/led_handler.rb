@@ -43,6 +43,30 @@ module SMSService
       end
     end
 
+    def ascending(time = 0.250)
+      stop_ascending unless @ascending.nil?
+      @ascending = Thread.new do
+        loop do
+          @pins.each do |_i, p|
+            p.on
+            sleep time
+          end
+          @pins.reverse_each do |_i, p|
+            p.off
+            sleep time
+          end
+        end
+      end
+    end
+
+    def stop_ascending
+      return if @ascending.nil?
+      @ascending.exit
+      @pins.each do |_i, p|
+        p.off
+      end
+    end
+
     def lightshow(time = 0.500)
       stop_lightshow unless @lightshow.nil?
       @lightshow = Thread.new do

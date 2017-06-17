@@ -62,12 +62,16 @@ loop do
 
   j = redis.dequeue
   if !j.nil?
+    # Start led game
+    pins.ascending
     puts 'Sending message...'
     if sim.send_sms(j['number'], j['text'])
       puts 'Message sent...'
     else
       puts 'Something went wrong sending the message...'
     end
+    # Stop led game
+    pins.stop_ascending
   else
     sleep REDIS_POLLING_FREQUENCY
   end
