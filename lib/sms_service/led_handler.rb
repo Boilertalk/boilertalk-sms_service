@@ -13,6 +13,8 @@ module SMSService
         pin = PiPiper::Pin.new(pin: p, direction: :out)
         @pins[p] = pin
       end
+
+      @animations = {}
     end
 
     def pin(p)
@@ -21,8 +23,8 @@ module SMSService
 
     # rubocop:disable Metrics/MethodLength
     def flash(time = 0.500)
-      stop_flash unless @flash.nil?
-      @flash = Thread.new do
+      stop_animations
+      @animations[:flash] = Thread.new do
         loop do
           @pins.each do |_i, p|
             p.on
@@ -35,17 +37,9 @@ module SMSService
       end
     end
 
-    def stop_flash
-      return if @flash.nil?
-      @flash.exit
-      @pins.each do |_i, p|
-        p.off
-      end
-    end
-
     def ascending(time = 0.250)
-      stop_ascending unless @ascending.nil?
-      @ascending = Thread.new do
+      stop_animations
+      @animations[:ascending] = Thread.new do
         loop do
           @pins.each do |_i, p|
             p.on
@@ -59,17 +53,9 @@ module SMSService
       end
     end
 
-    def stop_ascending
-      return if @ascending.nil?
-      @ascending.exit
-      @pins.each do |_i, p|
-        p.off
-      end
-    end
-
     def lightshow(time = 0.500)
-      stop_lightshow unless @lightshow.nil?
-      @lightshow = Thread.new do
+      stop_animations
+      @animations[:lightshow] = Thread.new do
         @pins.each do |_i, p|
           p.off
         end
@@ -83,12 +69,12 @@ module SMSService
       end
     end
 
-    def stop_lightshow
-      return if @lightshow.nil?
-      @lightshow.exit
-      @pins.each do |_i, p|
-        p.off
+    def stop_animations
+      @animations.each do |_k, v|
+        v.exit
       end
+
+      @animations = {}
     end
   end
 end

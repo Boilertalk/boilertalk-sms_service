@@ -45,7 +45,7 @@ puts 'Text mode activated...'
 # End Set to text mode
 
 # Setup complete: Stop flash indicator
-pins.stop_flash
+pins.stop_animations
 puts 'Setup complete...'
 
 # Setup Redis
@@ -71,7 +71,7 @@ loop do
       puts 'Something went wrong sending the message...'
     end
     # Stop led game
-    pins.stop_ascending
+    pins.stop_animations
   else
     sleep REDIS_POLLING_FREQUENCY
   end

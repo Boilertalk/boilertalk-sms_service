@@ -13,7 +13,16 @@ module SMSService
     def dequeue
       d = @redis.rpop(@key)
       return nil if d.nil?
-      JSON.parse(d)
+      parse_json(d)
+    end
+
+    private
+
+    def parse_json(json)
+      j = JSON.parse(json)
+      return j
+    rescue JSON::ParserError
+      return nil
     end
   end
 end
