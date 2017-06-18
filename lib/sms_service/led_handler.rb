@@ -74,6 +74,10 @@ module SMSService
         v.exit
       end
 
+      @pins.each do |_i, p|
+        p.off
+      end
+
       @animations = {}
     end
   end
